@@ -7,4 +7,11 @@ tenant = {
   test123 = {
     description = "Adding Description"
   }
+  prod = {}
+}
+
+app_profile {
+  net_centric1 = {
+    tenant = "prod"
+  }
 }
