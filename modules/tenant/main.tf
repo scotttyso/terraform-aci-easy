@@ -41,15 +41,25 @@ variable "tenant" {
 # GUI Location: Configure > Policies > Create Policy > Device Connector
 #_________________________________________________________________________
 
-module "tenant" {
-  source           = "../../../terraform-aci/modules/tenant"
-  for_each         = var.tenant
-  alias            = each.value.alias != null ? each.value.alias : ""
-  description      = each.value.description != null ? each.value.description : ""
-  monEPGPol_dn     = each.value.monEPGPol_dn != null ? each.value.monEPGPol_dn : ""
-  name             = each.key
-  vzFilter_dn_list = each.value.vzFilter_dn_list != null ? each.value.vzFilter_dn_list : []
+
+resource "aci_tenant" "tenant" {
+  for_each = var.tenant
+  description                   = each.value.description != null ? each.value.description : ""
+  name                          = each.key
+  name_alias                    = each.value.alias != null ? each.value.alias : ""
+  relation_fv_rs_tenant_mon_pol = each.value.monEPGPol_dn != null ? each.value.monEPGPol_dn : ""
+  # relation_fv_rs_tn_deny_rule   = var.vzFilter_dn_list
 }
+
+# module "tenant" {
+#   source           = "../../../terraform-aci/modules/tenant"
+#   for_each         = var.tenant
+#   alias            = each.value.alias != null ? each.value.alias : ""
+#   description      = each.value.description != null ? each.value.description : ""
+#   # monEPGPol_dn     = each.value.monEPGPol_dn != null ? each.value.monEPGPol_dn : ""
+#   name             = each.key
+#   vzFilter_dn_list = each.value.vzFilter_dn_list != null ? each.value.vzFilter_dn_list : []
+# }
 
 # module "device_connector_policies" {
 #   depends_on = [
